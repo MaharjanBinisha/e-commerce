@@ -68,7 +68,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch])
+  }, [category, subCategory, search, showSearch,products])
 
   useEffect(()=>{
 sortProduct();
@@ -118,7 +118,7 @@ sortProduct();
             </p>
             <p className='flex gap-2'>
               <input className='w-3' type="checkbox" value={'Formal'} onChange={toggleSubCategory} />
-              Formals
+              Formal
             </p>
           </div>
         </div>

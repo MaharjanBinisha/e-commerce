@@ -11,7 +11,7 @@ const Orders = () => {
       <div className='text-2xl'>
         <Title text1={'My orders'}/>
       </div>
-      <div>
+      <div> 
         {
           products.slice(1,4).map((item, index)=>(
             <div key={index} className='py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
@@ -32,7 +32,7 @@ const Orders = () => {
                       <p className='min-w-2 h-2 rounded-full bg-green-500'></p>
                       <p className='text-sm md:text-base'>ready to ship</p>
                   </div>
-                  <button className='border px-4 py-2 text-sm font-medium rounded-sm'> Track order</button>
+                  <button className='border px-4 py-2 text-sm font-medium rounded-sm'> Order Status</button>
 
                   </div>
               </div>
