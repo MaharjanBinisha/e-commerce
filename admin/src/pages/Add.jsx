@@ -23,6 +23,23 @@ const Add = ({token}) => {
   const onSubmitHandler= async (e)=>{
 e.preventDefault();
 
+  // Check if at least one image is uploaded
+  const isAnyImageUploaded = image1 || image2 || image3 || image4;
+
+  // Validation check
+  if (
+    !name.trim() || 
+    !description.trim() || 
+    !price || 
+    !category || 
+    !subCategory || 
+    sizes.length === 0 || 
+    !isAnyImageUploaded  // Ensure at least one image is uploaded
+  ) {
+    toast.error("All fields should be filled, and at least one image must be uploaded.");
+    return;
+  }
+
 try {
   const formData = new FormData()
   formData.append("name",name)
