@@ -2,30 +2,69 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import RelatedProducts from '../components/RelatedProducts';
-
+import axios from 'axios'
+import { toast } from "react-toastify";
 const Product = () => {
 
   const { productId } = useParams();
-  const { products,currency,addToCart } = useContext(ShopContext);
+  const { backendUrl,currency,addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('')
   const [size, setSize]=useState('')
 
-  const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item)
-        setImage(item.image[0])
-        return null;
-      }
+  // const fetchProductData = async () => {
+  //   products.map((item) => {
+  //     if (item._id === productId) {
+  //       setProductData(item)
+  //       setImage(item.image[0])
+  //       return null;
+  //     }
 
-    })
+  //   })
 
+  // }
+
+  // useEffect(() => {
+  //   fetchProductData();
+  // }, [productId, products])
+
+
+
+
+const handleAddToCart = () => {
+  const token = localStorage.getItem("token"); // Check if user is logged in
+
+  if (!token) {
+    toast.error("Please login to add products to the cart", {
+      
+    });
+    return;
   }
+
+  addToCart(productData._id, size);
+};
+
+  
+
+  // Fetch product data from backend
+  const fetchProductData = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/product/single/${productId}`);
+      if (response.data.success) {
+        setProductData(response.data.product);
+        setImage(response.data.product.image[0]); // Default image
+      } else {
+        console.error('Product not found');
+      }
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  };
 
   useEffect(() => {
     fetchProductData();
-  }, [productId, products])
+  }, [productId]);
+  
 
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -68,7 +107,7 @@ const Product = () => {
 
           </div>
          </div>
-         <button onClick={()=>addToCart(productData._id,size)} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'> Add to cart</button>
+         <button onClick= {handleAddToCart} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'> Add to cart</button>
         <hr className='mt-8 sm:w-4/5'/>
         <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
           <p>Original product</p>

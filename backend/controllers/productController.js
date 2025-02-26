@@ -73,18 +73,60 @@ const removeProduct = async (req,res)=>{
 }
 
 //for single product info
-const singleProduct = async (req,res)=>{
+// const singleProduct = async (req,res)=>{
 
+//     try {
+//         const {productId}= req.body
+//         const product= await productModel.findById(productId)
+//         res.json({success:true,product})
+
+//     } catch (error) {
+//         console.log(error)
+//     res.json({success:false, message:error.message})
+//     }
+
+// }
+const singleProduct = async (req, res) => {
     try {
-        const {productId}= req.body
-        const product= await productModel.findById(productId)
-        res.json({success:true,product})
+        const { productId } = req.params; // Get product ID from URL params
+        const product = await productModel.findById(productId);
+        
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.json({ success: true, product });
 
     } catch (error) {
-        console.log(error)
-    res.json({success:false, message:error.message})
+        console.error("Error fetching product:", error);
+        res.status(500).json({ success: false, message: "Server error" });
     }
+};
 
-}
+const searchProducts = async (req, res) => {
+    try {
+        const { query } = req.query;
 
-export {listProduct, addProduct, singleProduct, removeProduct}
+        if (!query) {
+            return res.json({ success: false, message: "No search query provided" });
+        }
+
+        // Search by product name, category, or subcategory
+        const products = await productModel.find({
+            $or: [
+                { name: { $regex: query, $options: "i" } }, // Case-insensitive search
+                { category: { $regex: query, $options: "i" } },
+                { subCategory: { $regex: query, $options: "i" } }
+            ]
+        });
+
+        res.json({ success: true, products });
+
+    } catch (error) {
+        console.error("Error in search:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+
+export {listProduct, addProduct, singleProduct, removeProduct, searchProducts}

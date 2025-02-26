@@ -34,9 +34,9 @@ const Collection = () => {
   const applyFilter = () => {
     let productsCopy = products.slice();
    
-    if(showSearch&& search){
-      productsCopy=productsCopy.filter(item=> item.name.toLowerCase().includes(search.toLowerCase()))
-    }
+    // if(showSearch&& search){
+    //   productsCopy=productsCopy.filter(item=> item.name.toLowerCase().includes(search.toLowerCase()))
+    // }
 
     if (category.length > 0) {
       productsCopy = productsCopy.filter(item => category.includes(item.category));
@@ -140,11 +140,12 @@ sortProduct();
         {/*products */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
 
-          {
-            filterProducts.map((item, index) => (
-              <ProductItem key={index} name={item.name} id={item._id} price={item.price} image={item.image} />
-            ))
-          }
+        {
+  (showSearch && search ? products : filterProducts).map((item, index) => (
+    <ProductItem key={index} name={item.name} id={item._id} price={item.price} image={item.image} />
+  ))
+}
+
         </div>
       </div>
 

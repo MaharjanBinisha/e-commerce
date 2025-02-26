@@ -130,6 +130,32 @@ const ShopContextProvider = (props) => {
 
     }
   }
+  // Backend search function
+const searchProducts = async (query) => {
+  try {
+    if (!query) {
+      getProductsData(); // Reset products if search is empty
+      return;
+    }
+
+    const response = await axios.get(`${backendUrl}/api/product/search?query=${query}`);
+    if (response.data.success) {
+      setProducts(response.data.products);
+    } else {
+      toast.error(response.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error(error.message);
+  }
+};
+
+// Search function to update state and trigger API search
+const handleSearch = (query) => {
+  setSearch(query);
+  searchProducts(query);
+};
+
 
 const getUserCart = async (token)=>{
 try {
@@ -160,8 +186,8 @@ try {
 
   const value = {
     products, currency, delivery_fee,
-    search, setSearch, showSearch, setShowSearch,
-    cartItems, addToCart,
+    search,setSearch: handleSearch, showSearch, setShowSearch,
+    cartItems, addToCart,setCartItems,
     getCartCount, updateQuantity, getCartAmount, navigate, backendUrl,
     setToken, token
   }
