@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 
 const SearchBar = () => {
 
-    const { search, setSearch, showSearch, setShowSearch } = useContext(ShopContext);
+    const { search, setSearch, showSearch, setShowSearch,handleCloseSearch } = useContext(ShopContext);
     const [visible, setVisible]=useState(false)
     const location= useLocation();
 
@@ -25,7 +25,7 @@ setVisible(true);
                 <input value={search} onChange={(e) => setSearch(e.target.value)} className='flex-1 outline-none bg-inherit text-sm' type="text" placeholder='Search' />
                 <img className='w-4 ' src={assets.search_icon} alt="" />
             </div>
-            <img onClick={() => setShowSearch(false)} className='inline w-3 cursor-pointer' src={assets.cross_icon} alt="" />
+            <img onClick={handleCloseSearch}className='inline w-3 cursor-pointer' src={assets.cross_icon} alt="" />
 
         </div>
     ) : null

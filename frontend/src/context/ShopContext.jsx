@@ -155,6 +155,11 @@ const handleSearch = (query) => {
   setSearch(query);
   searchProducts(query);
 };
+const handleCloseSearch = () => {
+  setShowSearch(false);
+  setSearch("");  // Clear search input
+  getProductsData(); // Reset to all products
+};
 
 
 const getUserCart = async (token)=>{
@@ -187,7 +192,7 @@ try {
   const value = {
     products, currency, delivery_fee,
     search,setSearch: handleSearch, showSearch, setShowSearch,
-    cartItems, addToCart,setCartItems,
+    cartItems, addToCart,setCartItems,handleCloseSearch,
     getCartCount, updateQuantity, getCartAmount, navigate, backendUrl,
     setToken, token
   }
