@@ -75,6 +75,7 @@ const statusHandler = async(event,orderId)=>{
                 <p>{order.address.city + ", " + order.address.state + ", " + order.address.country + ", " + order.address.zipcode}</p>
               </div>
               <p>{order.address.phone}</p>
+              <p>{order.address.email}</p>
             </div>
             <div>
               <p className='text-sm sm:text-[15px]'>Items: {order.items.length}</p>
