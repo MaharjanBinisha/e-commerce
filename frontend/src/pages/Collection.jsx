@@ -95,6 +95,10 @@ sortProduct();
               Men
             </p>
             <p className='flex gap-2'>
+              <input className='w-3' type="checkbox" value={'Unisex'} onChange={toggleCategory} />
+              Unisex
+            </p>
+            <p className='flex gap-2'>
               <input className='w-3' type="checkbox" value={'Kids'} onChange={toggleCategory} />
               Kids
             </p>
@@ -119,6 +123,18 @@ sortProduct();
             <p className='flex gap-2'>
               <input className='w-3' type="checkbox" value={'Formal'} onChange={toggleSubCategory} />
               Formal
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type="checkbox" value={'Casual'} onChange={toggleSubCategory} />
+              Casual
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type="checkbox" value={'Longuewear'} onChange={toggleSubCategory} />
+              Longuewear
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type="checkbox" value={'Traditional Attire'} onChange={toggleSubCategory} />
+              Traditional Attire
             </p>
           </div>
         </div>

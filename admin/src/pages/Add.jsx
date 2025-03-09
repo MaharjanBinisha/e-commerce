@@ -121,6 +121,7 @@ try {
       <option value="Men">Men</option>
       <option value="Women">Women</option>
       <option value="Kids">Kids</option>
+      <option vlaue="Unisex">Unisex</option>
     </select>
   </div>
 
@@ -131,6 +132,9 @@ try {
       <option value="Bottomwear">Bottomwear</option>
       <option value="Winterwear">Winterwear</option>
       <option value="Formal">Formal</option>
+      <option value="Casual">Casual</option>
+      <option value="Longuewear">Longuewear</option>
+      <option value="Traditional Attire">Traditional Attire</option>
     </select>
   </div>
 
