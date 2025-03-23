@@ -57,24 +57,51 @@ const updateCart = async (req, res) => {
 }
 
 
-//user cart data
-const getUserCart = async (req, res) => {
+// //user cart data
+// const getUserCart = async (req, res) => {
 
-    try {
+//     try {
         
-    const {userId}=req.body
+//     const {userId}=req.body
 
-    const userData = await userModel.findById(userId)
-        let cartData = await userData.cartData;
+//     const userData = await userModel.findById(userId)
+//         let cartData = await userData.cartData;
 
-        res.json({success:true,cartData})
+//         res.json({success:true,cartData})
+
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message })
+//     }
+
+// }
+const getUserCart = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        // Check if userId is provided
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "User ID is required" });
+        }
+
+        const userData = await userModel.findById(userId);
+
+        // Check if user exists
+        if (!userData) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Ensure cartData exists before accessing it
+        const cartData = userData.cartData || [];  // Default to an empty array if undefined
+
+        res.json({ success: true, cartData });
 
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message });
     }
+};
 
-}
 
 
 export { addToCart, updateCart, getUserCart }
