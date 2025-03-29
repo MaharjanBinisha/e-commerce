@@ -22,7 +22,7 @@ const App = () => {
 
 
   return (
-    <div className='bg-gray-50 min-h-screen'>
+    <div className='bg-ivory-50 min-h-screen'>
       <ToastContainer/>
       {token === ""
         ? <Login setToken={setToken}/>
