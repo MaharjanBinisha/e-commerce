@@ -9,7 +9,9 @@ const productSchema= new mongoose.Schema({
     subCategory:{type: String, required:true},
     sizes:{type:Array, required:true},
     bestseller:{type:Boolean},
-    date:{type:Number, required:true}
+    // date:{type:Number, required:true}
+    date: { type: Date, required: false }
+
 })
 
 const productModel= mongoose.models.product || mongoose.model("product",productSchema);
