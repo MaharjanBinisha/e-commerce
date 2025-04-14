@@ -115,7 +115,7 @@ const addProduct = async (req, res) => {
         console.log("🔹 Request body:", req.body);
         console.log("🔹 Request files:", req.files);
 
-        const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
+        const { name, description, price, category, subCategory, bestseller, sizes, quantity  } = req.body;
 
         // Ensure at least one image is uploaded
         if (!req.files || Object.keys(req.files).length === 0) {
@@ -162,6 +162,7 @@ const addProduct = async (req, res) => {
             bestseller,
             sizes: JSON.parse(sizes), // Convert sizes from JSON string to array
             image: imageUrls, // Store Cloudinary URLs
+            quantity: Number(quantity),
         });
 
         await newProduct.save();
@@ -310,7 +311,7 @@ const searchProducts = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { productId } = req.params;
-        const { name, description, price, category, subCategory, sizes, bestseller } = req.body;
+        const { name, description, price, category, subCategory, sizes, bestseller, quantity } = req.body;
 
         // Find the existing product
         const product = await Product.findById(productId);
@@ -358,14 +359,39 @@ const editProduct = async (req, res) => {
             subCategory: subCategory || product.subCategory,
             bestseller: bestseller === "true",
             sizes: JSON.parse(sizes),
-            image: updatedImages.filter(img => img) // Remove any empty slots
+            image: updatedImages.filter(img => img), // Remove any empty slots
+            quantity: quantity !== undefined && quantity !== ""
+            ? Number(quantity)
+            : product.quantity
+        
+
         };
+
+        // const updatedProduct = await Product.findByIdAndUpdate(
+        //     productId,
+        //     updateData,
+        //     { new: true }
+        // );
+       
 
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
-            updateData,
+            {
+                $set: {
+                    name: name || product.name,
+                    description: description || product.description,
+                    price: price !== undefined && price !== "" ? Number(price) : product.price,
+                    category: category || product.category,
+                    subCategory: subCategory || product.subCategory,
+                    bestseller: bestseller !== undefined ? bestseller === "true" : product.bestseller,
+                    quantity: quantity !== undefined && quantity !== "" ? Number(quantity) : product.quantity,
+                    sizes: sizes ? (typeof sizes === "string" ? JSON.parse(sizes) : sizes) : product.sizes,
+                    image: updatedImages.filter(img => img),
+                },
+            },
             { new: true }
         );
+        
 
         res.json({ 
             success: true, 

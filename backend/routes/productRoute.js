@@ -132,8 +132,12 @@ productRouter.put("/update/:id", uploadMiddleware, async (req, res) => {
         subCategory: req.body.subCategory || existingProduct.subCategory,
         bestseller: req.body.bestseller === 'true',
         sizes: sizesArray,
-        image: updatedImages.filter(img => img) // Remove empty slots
+        image: updatedImages.filter(img => img), // Remove empty slots
+        quantity: req.body.quantity !== undefined && req.body.quantity !== "" 
+          ? Number(req.body.quantity) 
+          : existingProduct.quantity,
       };
+      
   
       const updatedProduct = await Product.findByIdAndUpdate(
         id,

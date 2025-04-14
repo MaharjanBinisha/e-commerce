@@ -35,13 +35,25 @@ const ShopContextProvider = (props) => {
       console.error("🔥 Error fetching recommendations:", error);
     }
   };
+
+
+  // const addToCart = async (itemId, size) => {
+  //   if (!size) {
+  //     toast.error('Please select size for the product');
+  //     return;
+
+  //   }
   const addToCart = async (itemId, size) => {
     if (!size) {
       toast.error('Please select size for the product');
       return;
-
     }
-
+  
+    const product = products.find(p => p._id === itemId);
+    if (!product || product.quantity <= 0) {
+      toast.error('This product is sold out');
+      return;
+    }
     let cartData = structuredClone(cartItems);
     if (cartData[itemId]) {
       if (cartData[itemId][size]) {

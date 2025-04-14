@@ -196,6 +196,7 @@ const Add = ({ token, product }) => {
     name: product?.name || "",
     description: product?.description || "",
     price: product?.price || "",
+    quantity: product?.quantity || 1,
     category: product?.category || "Men",
     subCategory: product?.subCategory || "Topwear",
     bestseller: product?.bestseller || false,
@@ -218,6 +219,7 @@ const Add = ({ token, product }) => {
         name: product.name || "",
         description: product.description || "",
         price: product.price || "",
+        quantity: product.quantity || 1,
         category: product.category || "Men",
         subCategory: product.subCategory || "Topwear",
         bestseller: product.bestseller || false,
@@ -282,6 +284,8 @@ const Add = ({ token, product }) => {
         !formData.name.trim() ||
         !formData.description.trim() ||
         !formData.price ||
+        // !formData.quantity ||
+        formData.quantity === '' || formData.quantity === null ||
         !formData.category ||
         !formData.subCategory ||
         formData.sizes.length === 0
@@ -298,6 +302,7 @@ const Add = ({ token, product }) => {
       data.append("category", formData.category);
       data.append("subCategory", formData.subCategory);
       data.append("bestseller", formData.bestseller);
+      data.append("quantity", formData.quantity);
       
       // Clean sizes array before sending
       const cleanedSizes = formData.sizes.map(size => size.replace(/"/g, ''));
@@ -323,8 +328,8 @@ const Add = ({ token, product }) => {
         url,
         data,
         headers: {
-          token,
-          "Content-Type": "multipart/form-data",
+          token
+          // "Content-Type": "multipart/form-data",
         },
       });
 
@@ -339,6 +344,7 @@ if (response.data.success) {
     name: "",
     description: "",
     price: "",
+    quantity: "", 
     category: "Men",
     subCategory: "Topwear",
     bestseller: false,
@@ -465,7 +471,20 @@ if (response.data.success) {
           />
         </div>
       </div>
+      <div>
+  <p className='mb-2'>Product quantity</p>
+  <input
+  type="number"
+  name="quantity"
+  value={formData.quantity}
+  onChange={(e) =>
+    setFormData({ ...formData, quantity: Number(e.target.value) })
+  }
+/>
 
+
+
+</div>
       {/* Size Selection */}
       <div>
         <p className='mb-2'>Product size</p>
