@@ -83,8 +83,8 @@ sortProduct();
           <img className={`h-3 sm:hidden ${showFilter ? 'rotate-90' : ''}`} src={assets.dropdown_icon} alt="" />
         </p>
         {/* category */}
-        <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-          <p className='mb-3 text-sm font-medium'>Categories</p>
+        <div className={` pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
+        <p className='mb-3 text-sm font-semibold text-gray-700 border-b pb-1'>Categories</p>
           <div className='flex flex-col gap-2 text-sm font-light text-gray-600'>
             <p className='flex gap-2'>
               <input className='w-3' type="checkbox" value={'Women'} onChange={toggleCategory} />
@@ -105,8 +105,8 @@ sortProduct();
           </div>
         </div>
         {/* sub category*/}
-        <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
-          <p className='mb-3 text-sm font-medium'>Types</p>
+        <div className={` pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
+        <p className='mb-3 text-sm font-semibold text-gray-700 border-b pb-1'>Types</p>
           <div className='flex flex-col gap-2 text-sm font-light text-gray-600'>
             <p className='flex gap-2'>
               <input className='w-3' type="checkbox" value={'Winterwear'} onChange={toggleSubCategory} />
@@ -145,7 +145,9 @@ sortProduct();
       <div className='flex-1'>
 
         <div className='flex justify-between text-base sm:text-2xl mb-4'>
-          <Title text1={'OUR COLLECTIONS'} />
+        <div className='flex-1 text-center'>
+    <Title text1={'OUR COLLECTIONS'} />
+  </div>
           {/*Product sort */}
           <select onChange={(e)=>setSortType(e.target.value)} className='border-2 border-gray-200 text-sm px-2'>
             <option value="relavent"> sort by: relevant</option>
