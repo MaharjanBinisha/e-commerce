@@ -427,7 +427,7 @@ if (response.data.success) {
       {/* Category, Subcategory, and Price */}
       <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
         <div>
-          <p className='mb-2'>Product category</p>
+          <p className='mb-1'>Product category</p>
           <select 
             name="category"
             onChange={handleInputChange} 
@@ -442,7 +442,7 @@ if (response.data.success) {
         </div>
 
         <div>
-          <p className='mb-2'>Product sub-category</p>
+          <p className='mb-1'>Product sub-category</p>
           <select 
             name="subCategory"
             onChange={handleInputChange} 
@@ -460,7 +460,7 @@ if (response.data.success) {
         </div>
 
         <div>
-          <p className='mb-2'>Product price</p>
+          <p className='mb-1'>Product price</p>
           <input 
             name="price"
             onChange={handleInputChange} 
@@ -468,14 +468,17 @@ if (response.data.success) {
             className='w-full px-3 py-2 sm:w-[120px]' 
             type="number" 
             placeholder='2555' 
+            min="0"
           />
         </div>
       </div>
       <div>
-  <p className='mb-2'>Product quantity</p>
+  <p className='mb-1'>Product quantity</p>
   <input
   type="number"
   name="quantity"
+  min="0"
+  className='w-full px-3 py-2 sm:w-[120px]' 
   value={formData.quantity}
   onChange={(e) =>
     setFormData({ ...formData, quantity: Number(e.target.value) })
@@ -487,7 +490,7 @@ if (response.data.success) {
 </div>
       {/* Size Selection */}
       <div>
-        <p className='mb-2'>Product size</p>
+        <p className='mb-1'>Product size</p>
         <div className='flex gap-3'>
           {["S", "M", "L", "XL", "XXL"].map((size) => (
             <div key={size} onClick={() => handleSizeToggle(size)}>
@@ -500,7 +503,7 @@ if (response.data.success) {
       </div>
 
       {/* Bestseller Checkbox */}
-      <div className='flex gap-2 mt-2'>
+      <div className='flex gap-1 mt-1'>
         <input 
           type="checkbox" 
           id='bestseller' 
@@ -518,7 +521,7 @@ if (response.data.success) {
       {/* Submit Button */}
       <button 
         type="submit" 
-        className='w-28 py-3 mt-4 bg-black text-white'
+        className='w-28 py-3 mt-1 bg-black text-white'
         disabled={isLoading}
       >
         {isLoading ? "Processing..." : (isEditMode ? "Update" : "Add")}

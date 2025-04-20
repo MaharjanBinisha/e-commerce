@@ -1,302 +1,5 @@
 
-
-# from flask import Flask, request, jsonify
-# import numpy as np
-# import pandas as pd
-# import faiss
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from pymongo import MongoClient
-# from bson import ObjectId
-
-# app = Flask(__name__)
-
-# # Connect to MongoDB
-# client = MongoClient("mongodb+srv://binisha:binisha7613@cluster0.he1e0.mongodb.net")
-# db = client["e-commerce"]
-# products_collection = db["products"]
-# interactions_collection = db["interactions"]
-
-# # Fetch product data from MongoDB
-# products = list(products_collection.find({}, {"_id": 1, "name": 1, "category": 1, "description": 1}))
-
-# # Debugging: Print the first product to check its structure
-# if products:
-#     print("Sample Product from MongoDB:", products[0])
-# else:
-#     print("No products found in MongoDB!")
-
-# # Ensure `_id` is converted to `id`
-# for product in products:
-#     product["id"] = str(product["_id"])  # Convert ObjectId to string
-#     del product["_id"]  # Remove original MongoDB _id field
-
-# # Convert to DataFrame
-# df = pd.DataFrame(products)
-
-# # Debugging: Print DataFrame columns
-# print("DataFrame columns:", df.columns)
-
-# # TF-IDF Vectorization
-# vectorizer = TfidfVectorizer()
-# tfidf_matrix = vectorizer.fit_transform(df["description"])
-
-# # Convert TF-IDF matrix to numpy array
-# tfidf_array = tfidf_matrix.toarray()
-
-# # Build FAISS index
-# d = tfidf_array.shape[1]
-# index = faiss.IndexFlatL2(d)
-# index.add(np.array(tfidf_array, dtype=np.float32))
-
-
-# @app.route('/recommend', methods=['POST'])
-# def recommend():
-#     data = request.get_json()
-#     user_id = data.get("user_id")
-
-#     if not user_id:
-#         return jsonify({"error": "user_id is required"}), 400
-
-#     try:
-#         user_id = ObjectId(user_id)
-#     except:
-#         return jsonify({"error": "Invalid user_id format"}), 400
-
-#     # Fetch interactions for this user
-#     interactions = list(interactions_collection.find({"userId": user_id}))
-
-#     if not interactions:
-#         return jsonify({"error": "No interactions found for this user"}), 404
-
-#     # Extract product IDs from interactions
-#     interacted_product_ids = [str(item["_id"]) for interaction in interactions if "items" in interaction for item in interaction["items"]]
-
-#     # Debugging: Print interacted product IDs
-#     print("Interacted Product IDs:", interacted_product_ids)
-
-#     # Ensure 'id' exists before filtering
-#     if "id" not in df.columns:
-#         return jsonify({"error": "Product data is missing 'id' field"}), 500
-
-#     # Find product descriptions for interacted products
-#     product_descs = df[df["id"].isin(interacted_product_ids)]["description"].tolist()
-
-#     if not product_descs:
-#         return jsonify({"error": "No matching products found for user interactions"}), 404
-
-#     # Transform product descriptions using TF-IDF
-#     product_vectors = vectorizer.transform(product_descs).toarray().astype(np.float32)
-
-#     # Search in FAISS for similar products
-#     D, I = index.search(product_vectors, 3)
-
-#     recommended_products = []
-#     for indices in I:
-#         recommended_products.extend(df.iloc[indices].to_dict(orient="records"))
-
-#     # Remove duplicates
-#     recommended_products = list({p["id"]: p for p in recommended_products}.values())
-
-#     return jsonify({"recommended_products": recommended_products})@app.route('/recommend', methods=['POST'])
-# def recommend():
-#     data = request.get_json()
-#     user_id = data.get("user_id")
-
-#     if not user_id:
-#         return jsonify({"error": "user_id is required"}), 400
-
-#     try:
-#         user_id = ObjectId(user_id)
-#     except:
-#         return jsonify({"error": "Invalid user_id format"}), 400
-
-#     # Fetch interactions for this user
-#     interactions = list(interactions_collection.find({"userId": user_id}))
-
-#     if not interactions:
-#         return jsonify({"error": "No interactions found for this user"}), 404
-
-#     # Extract product IDs from interactions
-#     interacted_product_ids = [str(item["_id"]) for interaction in interactions if "items" in interaction for item in interaction["items"]]
-
-#     # Debugging: Print interacted product IDs
-#     print("Interacted Product IDs:", interacted_product_ids)
-
-#     # Ensure 'id' exists before filtering
-#     if "id" not in df.columns:
-#         return jsonify({"error": "Product data is missing 'id' field"}), 500
-
-#     # Find product descriptions for interacted products
-#     product_descs = df[df["id"].isin(interacted_product_ids)]["description"].tolist()
-
-#     if not product_descs:
-#         return jsonify({"error": "No matching products found for user interactions"}), 404
-
-#     # Transform product descriptions using TF-IDF
-#     product_vectors = vectorizer.transform(product_descs).toarray().astype(np.float32)
-
-#     # Search in FAISS for similar products
-#     D, I = index.search(product_vectors, 3)
-
-#     recommended_products = []
-#     for indices in I:
-#         recommended_products.extend(df.iloc[indices].to_dict(orient="records"))
-
-#     # Remove duplicates
-#     recommended_products = list({p["id"]: p for p in recommended_products}.values())
-
-#     return jsonify({"recommended_products": recommended_products})
-# Precision@K function
-# def precision_at_k(recommended_ids, actual_interacted_ids, k):
-#     recommended_k = recommended_ids[:k]  # Take top-k recommendations
-#     relevant_items = set(recommended_k) & set(actual_interacted_ids)  # Find relevant recommendations
-#     return len(relevant_items) / k if k > 0 else 0  # Compute precision
-
-# @app.route('/recommend', methods=['POST'])
-# def recommend():
-#     data = request.json
-#     user_id = data.get("user_id")
-
-#     try:
-#         user_id = ObjectId(user_id)
-#     except:
-#         return jsonify({"error": "Invalid user_id format"}), 400
-
-#     interactions = list(interactions_collection.find({"userId": user_id}))
-
-#     if not interactions:
-#         return jsonify({"error": "No interactions found for this user"}), 404
-
-#     interacted_product_ids = [str(item["_id"]) for interaction in interactions if "items" in interaction for item in interaction["items"]]
-
-#     interacted_categories = set(df[df["id"].isin(interacted_product_ids)]["category"].tolist())
-
-#     product_descs = df[df["id"].isin(interacted_product_ids)]["description"].tolist()
-
-#     if not product_descs:
-#         return jsonify({"error": "No descriptions found for interacted products"}), 404
-
-#     product_vectors = vectorizer.transform(product_descs).toarray().astype(np.float32)
-#     D, I = index.search(product_vectors, 10)  # Retrieve top 10 recommendations
-
-#     recommended_products = []
-#     for indices in I:
-#         for idx in indices:
-#             if idx < len(df):  # Ensure index is valid
-#                 product = df.iloc[idx].to_dict()
-#                 if product["category"] in interacted_categories:  # Filter by category
-#                     recommended_products.append(product)
-    
-#     recommended_products = list({p["id"]: p for p in recommended_products}.values())[:10]  # Limit to top 10
-
-#     # Calculate precision@5
-#     precision = precision_at_k([p["id"] for p in recommended_products], interacted_product_ids, 5)
-
-#     return jsonify({"recommended_products": recommended_products, "precision@5": precision})
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5001, debug=True)
-
-
-
-#works fine for recommendation 
-# from flask import Flask, request, jsonify
-# import numpy as np
-# import pandas as pd
-# import faiss
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from pymongo import MongoClient
-# from bson import ObjectId
-
-# app = Flask(__name__)
-
-# # Connect to MongoDB
-# client = MongoClient("mongodb+srv://binisha:binisha7613@cluster0.he1e0.mongodb.net")
-# db = client["e-commerce"]
-# products_collection = db["products"]
-# interactions_collection = db["interactions"]
-
-# # Fetch products from MongoDB
-# def load_products():
-#     products = list(products_collection.find({}, {"_id": 1, "name": 1, "category": 1, "description": 1}))
-#     for product in products:
-#         product["id"] = str(product["_id"])
-#         del product["_id"]
-#     return pd.DataFrame(products)
-
-# df = load_products()
-# vectorizer = TfidfVectorizer()
-
-# def build_faiss_index():
-#     tfidf_matrix = vectorizer.fit_transform(df["description"])  
-#     tfidf_array = tfidf_matrix.toarray().astype(np.float32)
-    
-#     index = faiss.IndexFlatL2(tfidf_array.shape[1])
-#     index.add(tfidf_array)
-    
-#     return index
-
-# def precision_at_k(recommended_ids, actual_interacted_ids, k):
-#     recommended_k = recommended_ids[:k]  
-#     relevant_items = set(recommended_k) & set(actual_interacted_ids)  
-#     return len(relevant_items) / k if k > 0 else 0  
-
-# @app.route('/recommend', methods=['POST'])
-# def recommend():
-#     global df  # Ensure we're using the latest data
-#     df = load_products()
-#     index = build_faiss_index()  
-
-#     data = request.json
-#     user_id = data.get("user_id")
-
-#     try:
-#         user_id = ObjectId(user_id)
-#     except:
-#         return jsonify({"error": "Invalid user_id format"}), 400
-
-#     interactions = list(interactions_collection.find({"userId": user_id}))
-
-#     if not interactions:
-#          return jsonify({"error": "No interactions found for this user"}), 404
-
-#     interacted_product_ids = [str(item["_id"]) for interaction in interactions if "items" in interaction for item in interaction["items"]]
-
-#     interacted_categories = set(df[df["id"].isin(interacted_product_ids)]["category"].tolist())
-
-#     product_descs = df[df["id"].isin(interacted_product_ids)]["description"].tolist()
-
-#     if not product_descs:
-#         return jsonify({"error": "No descriptions found for interacted products"}), 404
-
-#     product_vectors = vectorizer.transform(product_descs).toarray().astype(np.float32)
-
-#     # Use most recent product as query
-#     query_vector = product_vectors[-1].reshape(1, -1) if len(product_vectors) > 1 else product_vectors
-
-#     D, I = index.search(query_vector, 10)
-
-#     recommended_products = []
-#     for indices in I:
-#         for idx in indices:
-#             if idx < len(df):  
-#                 product = df.iloc[idx].to_dict()
-#                 if product["category"] in interacted_categories or len(recommended_products) < 10:
-#                     recommended_products.append(product)
-    
-#     recommended_products = list({p["id"]: p for p in recommended_products}.values())[:10]  
-
-#     precision = precision_at_k([p["id"] for p in recommended_products], interacted_product_ids, 5)
-
-#     return jsonify({"recommended_products": recommended_products, "precision@5": precision})
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5001, debug=True)
-
-
 #working for now code()
-#
-#
 # from flask import Flask, request, jsonify
 # import numpy as np
 # import pandas as pd
@@ -339,11 +42,6 @@
 #     recommended_k = recommended_ids[:k]  
 #     relevant_items = set(recommended_k) & set(actual_interacted_ids)  
 #     return len(relevant_items) / k if k > 0 else 0  
-
-
-
-
-
 
 
 
@@ -502,11 +200,51 @@ def build_faiss_index(df):
 # Build FAISS index at startup
 build_faiss_index(df_products)
 
-# Function to compute precision@k
+# # Function to compute precision@k
+# def precision_at_k(recommended_ids, actual_interacted_ids, k):
+#     recommended_k = recommended_ids[:k]  
+#     relevant_items = set(recommended_k) & set(actual_interacted_ids)  
+#     return len(relevant_items) / k if k > 0 else 0  
+
+# # Function to compute recall@k
+# def recall_at_k(recommended_ids, actual_interacted_ids, k):
+#     recommended_k = recommended_ids[:k]
+#     relevant_items = set(recommended_k) & set(actual_interacted_ids)
+#     return len(relevant_items) / len(actual_interacted_ids) if actual_interacted_ids else 0
+
+# # Function to compute F1@k
+# def f1_score_at_k(precision, recall):
+#     return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+# Function to compute category-based precision@k
 def precision_at_k(recommended_ids, actual_interacted_ids, k):
-    recommended_k = recommended_ids[:k]  
-    relevant_items = set(recommended_k) & set(actual_interacted_ids)  
-    return len(relevant_items) / k if k > 0 else 0  
+    recommended_k = recommended_ids[:k]
+    
+    recommended_categories = set(
+        df_products[df_products["id"].isin(recommended_k)]["category"]
+    )
+    interacted_categories = set(
+        df_products[df_products["id"].isin(actual_interacted_ids)]["category"]
+    )
+    relevant_items = recommended_categories & interacted_categories
+    return len(relevant_items) / len(recommended_categories) if recommended_categories else 0
+
+# Function to compute category-based recall@k
+def recall_at_k(recommended_ids, actual_interacted_ids, k):
+    recommended_k = recommended_ids[:k]
+    
+    recommended_categories = set(
+        df_products[df_products["id"].isin(recommended_k)]["category"]
+    )
+    interacted_categories = set(
+        df_products[df_products["id"].isin(actual_interacted_ids)]["category"]
+    )
+    relevant_items = recommended_categories & interacted_categories
+    return len(relevant_items) / len(interacted_categories) if interacted_categories else 0
+
+# Function to compute F1@k
+def f1_score_at_k(precision, recall):
+    return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
 # Update FAISS index when a new interaction occurs
 def update_faiss_index():
@@ -561,11 +299,22 @@ def recommend():
 
     recommended_products = list({p["id"]: p for p in recommended_products}.values())[:10]
 
-    precision = precision_at_k([p["id"] for p in recommended_products], interacted_product_ids, 10)
+    # precision = precision_at_k([p["id"] for p in recommended_products], interacted_product_ids, 10)
 
-    return jsonify({"recommended_products": recommended_products, "precision@10": precision})
+    # return jsonify({"recommended_products": recommended_products, "precision@10": precision})
+    recommended_ids = [p["id"] for p in recommended_products]
+    precision = precision_at_k(recommended_ids, interacted_product_ids, 10)
+    recall = recall_at_k(recommended_ids, interacted_product_ids, 10)
+    f1 = f1_score_at_k(precision, recall)
 
+    return jsonify({
+        "recommended_products": recommended_products,
+        "precision@10": precision,
+        "recall@10": recall,
+        "f1@10": f1
+    })
 
+   
 @app.route('/interaction', methods=['POST'])
 def log_interaction():
     data = request.json

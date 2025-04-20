@@ -219,7 +219,8 @@ const List = ({ token }) => {
     {/* Edit Form Modal */}
     {editProduct && (
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-[600px]">
+        {/* <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-[600px]"> */}
+        <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg p-6">
           <Add
             token={token}
             product={editProduct}
