@@ -7,7 +7,7 @@ import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/cartRoute.js'
 import orderRouter from './routes/orderRoute.js'
-
+import router from './routes/KhaltiRoutes.js'
 import interactionRouter from "./routes/interaction_routes.js";
 
 
@@ -33,14 +33,15 @@ app.use(
   
   
 //api endpoints 
-app.use('/api/user', userRouter)
+app.use('/api/user', userRouter) 
 app.use('/api/product',productRouter)
 app.use('/api/cart',cartRouter)
+app.use('/api/khalti', router);
 app.use('/api/order',orderRouter)
 
 app.use("/api/interactions", interactionRouter);
 app.use('/api/recommendations', recommendation_router);
- 
+
 app.get('/',(req,res)=>{
 res.send("api working")
 })

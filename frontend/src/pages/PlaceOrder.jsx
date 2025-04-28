@@ -6,6 +6,7 @@ import { ShopContext } from '../context/ShopContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 
+
 const PlaceOrder = () => {
 
   const [method, setMethod] = useState('cod');
@@ -31,7 +32,15 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
+    const token = localStorage.getItem('token'); // or sessionStorage, depending on how you're storing it
 
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    };
     // Check if all form fields are filled
     for (const key in formData) {
       if (formData[key].trim() === '') {
@@ -79,14 +88,138 @@ const PlaceOrder = () => {
             toast.error(response.data.message)
           }
           break;
+
+        //         case 'khalti':
+        // try {
+        //   const orderData = {
+        //     address: formData,
+        //     items: orderItems,
+        //     amount: getCartAmount() + delivery_fee
+        //   };
+
+        //   const response = await axios.post(
+        //     `${backendUrl}/api/khalti/init`,
+        //     orderData,
+        //     { 
+        //       headers: { 
+        //         token,
+        //         'Content-Type': 'application/json'
+        //       } 
+        //     }
+        //   );
+
+        //   if (response.data.success) {
+        //     // Save pidx to verify later
+        //     localStorage.setItem('khalti_pidx', response.data.pidx);
+        //     window.location.href = response.data.payment_url;
+        //   } else {
+        //     toast.error(response.data.message);
+        //   }
+        // } catch (error) {
+        //   console.error("Payment Error:", {
+        //     message: error.message,
+        //     response: error.response?.data,
+        //     stack: error.stack
+        //   });
+        //   toast.error(error.response?.data?.message || "Payment failed");
+        // }
+        // break;
+
+
+        // case 'khalti':
+        //   try {
+        //     const orderData = {
+        //       address: formData,
+        //       items: orderItems,
+        //       amount: getCartAmount() + delivery_fee
+        //     };
+        //     const token = localStorage.getItem('token');
+        //     const response = await axios.post(
+        //       `${backendUrl}/api/khalti/init`,
+        //       orderData,
+        //       {
+        //         headers: {
+        //           token: token, // Exactly matches your auth middleware expectation
+        //         },
+        //       }
+        //     );
+
+        //     if (response.data.success) {
+        //       sessionStorage.setItem('khalti_pidx', response.data.pidx);
+        //       window.location.href = response.data.payment_url;
+        //     } else {
+        //       toast.error(response.data.message);
+        //     }
+        //   } catch (error) {
+        //     console.error("Payment Error:", {
+        //       message: error.message,
+        //       response: error.response?.data
+        //     });
+        //     toast.error(error.response?.data?.message || "Payment initiation failed");
+        //   }
+        //   break;
+        case 'khalti':
+          try {
+            const orderData = {
+              address: formData,
+              items: orderItems,
+              amount: getCartAmount() + delivery_fee,
+              // Add any other required fields
+            };
+            
+            const token = localStorage.getItem('token');
+            
+            // Store the complete order data in sessionStorage
+            sessionStorage.setItem('khalti_order_data', JSON.stringify(orderData));
+            
+            const response = await axios.post(
+              `${backendUrl}/api/khalti/init`,
+              orderData,
+              {
+                headers: {
+                  token: token,
+                },
+              }
+            );
+        
+            if (response.data.success) {
+              // Store pidx in sessionStorage
+              sessionStorage.setItem('khalti_pidx', response.data.pidx);
+              
+              // Store purchase_order_id if returned
+              if (response.data.purchase_order_id) {
+                sessionStorage.setItem('purchase_order_id', response.data.purchase_order_id);
+              }
+              
+              // Redirect to payment URL
+              window.location.href = response.data.payment_url;
+            } else {
+              toast.error(response.data.message);
+              // Clean up stored data if failed
+              sessionStorage.removeItem('khalti_order_data');
+              sessionStorage.removeItem('khalti_pidx');
+            }
+          } catch (error) {
+            console.error("Payment Error:", {
+              message: error.message,
+              response: error.response?.data
+            });
+            toast.error(error.response?.data?.message || "Payment initiation failed");
+            // Clean up stored data on error
+            sessionStorage.removeItem('khalti_order_data');
+            sessionStorage.removeItem('khalti_pidx');
+          }
+          break;
+
+
         case 'stripe':
-const responseStripe = await axios.post(backendUrl + '/api/order/stripe',orderData,{headers:{token}})
-if (responseStripe.data.success) {
-  const {session_url}=responseStripe.data
-  window.location.replace(session_url)
-}else{
-  toast.error(responseStripe.data.message)
-}
+          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
+          if (responseStripe.data.success) {
+            const { session_url } = responseStripe.data
+            window.location.replace(session_url)
+          } else {
+            toast.error(responseStripe.data.message)
+          }
           break;
         default:
           break;
@@ -135,7 +268,7 @@ if (responseStripe.data.success) {
           <Title text1={'Payment'} text2={'Method'} />
           {/*payment method slsectin */}
           <div className='flex gap-3 flex-col lg:flex-row'>
-            <div onClick={()=>setMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
+            <div onClick={() => setMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'stripe' ? 'bg-green-500' : ''}`}></p>
               <img className='h-5 mx-4' src={assets.stripe_logo} alt="" />
             </div>
@@ -143,6 +276,11 @@ if (responseStripe.data.success) {
               <p className={`min-w-3.5 h-3.5 border rounded-full  ${method === 'razorpay' ? 'bg-green-500' : ''}`}></p>
               <img className='h-5 mx-4' src={assets.razorpay_logo} alt="" />
             </div> */}
+            <div onClick={() => setMethod('khalti')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
+              <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'khalti' ? 'bg-green-500' : ''}`}></p>
+              <img className='h-5 mx-4' src={assets.khalti_logo} alt="Khalti" />
+            </div>
+
             <div onClick={() => setMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
               <p className={`min-w-3.5 h-3.5 border rounded-full  ${method === 'cod' ? 'bg-green-500' : ''}`}></p>
               <p className='text-gray-600 text-sm font-medium mx-4'>cash on delivery</p>

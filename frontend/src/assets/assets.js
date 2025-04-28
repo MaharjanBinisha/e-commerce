@@ -53,7 +53,7 @@ import p_img49 from './p_img49.jpg'
 import p_img50 from './p_img50.png'
 import p_img51 from './p_img51.png'
 import p_img52 from './p_img52.png'
-
+import khalti_logo from './khalti_logo.png'
 
 import logo from './logo.png'
 import hero_img from './hero_img.jpg'
@@ -92,7 +92,8 @@ export const assets = {
     contact_img,
     razorpay_logo,
     stripe_logo,
-    cross_icon
+    cross_icon,
+    khalti_logo
 }
 
 export const products = [
@@ -719,5 +720,6 @@ export const products = [
         date: 1716668445448,
         bestseller: false
     }
+
 
 ]

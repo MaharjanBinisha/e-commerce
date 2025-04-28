@@ -113,6 +113,51 @@ const verifyStripe = async (req,res)=>{
     }
 }
 
+
+
+const placeOrderKhalti = async (req, res) => {
+    try {
+        const { userId, items, amount, address, purchase_order_id, purchase_order_name, customer_info } = req.body;
+
+        const orderData = {
+            userId,
+            items,
+            address,
+            amount,
+            paymentMethod: "Khalti",
+            payment: false,
+            date: Date.now(),
+            purchase_order_id,
+        };
+
+        const newOrder = new orderModel(orderData);
+        await newOrder.save();
+
+        res.json({ success: true, orderId: newOrder._id });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Khalti order placement failed" });
+    }
+};
+
+
+const verifyKhalti = async (req, res) => {
+    try {
+        const { orderId, userId } = req.body;
+
+        await orderModel.findByIdAndUpdate(orderId, { payment: true });
+        await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+        res.json({ success: true });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Khalti verification failed" });
+    }
+};
+
+
 //uisng razorpay
 const placeOrderRazorpay = async (req, res) => {
 
@@ -167,6 +212,6 @@ const updateStatus = async (req, res) => {
 }
 
 
-export { verifyStripe,placeOrder, placeOrderRazorpay, placeOrderStripe, userOrders, allOrders, updateStatus }
+export { verifyStripe,placeOrder, placeOrderRazorpay, placeOrderStripe, userOrders, allOrders, updateStatus, placeOrderKhalti, verifyKhalti }
 
 
