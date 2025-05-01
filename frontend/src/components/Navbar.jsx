@@ -2,6 +2,11 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
+import axios from 'axios';
+import { backendUrl } from '../../../admin/src/App';
+import { toast } from 'react-toastify';
+
+
 const Navbar = () => {
 
   const [visible, setVisible] = useState(false);
@@ -16,7 +21,30 @@ const Navbar = () => {
       setCartItems({})
     
   }
-
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      try {
+        const response = await axios.delete(backendUrl + '/api/user/delete', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        });
+  
+        if (response.data.success) {
+          toast.success('Account deleted successfully!'); // ✅ toast
+          logout(); // logout and navigate to login page
+        } else {
+          toast.error(response.data.message || 'Failed to delete account'); // ❌ toast
+        }
+      } catch (error) {
+        console.error('Error deleting account:', error);
+        toast.error('Something went wrong. Please try again.'); // ❌ toast
+      }
+    }
+  };
+  
+  
   return (
     <div className='flex items-center justify-between py-5 font-medium'>
       <Link to='/'><img src={assets.logo} className='w-25' alt="" /></Link>
@@ -61,10 +89,11 @@ const Navbar = () => {
          {/* dropdown */}
           {token && 
           <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
-            <div className='flex flex-col gap-2 w-38 py-3 px-5 bg-slate-100 text-gray-600 rounded'>
+            <div className='flex flex-col gap-2 w-40 py-3 px-5 bg-slate-100 text-gray-600 rounded'>
               {/* <p className='cursor-pointer hover:text-black'>My profile</p> */}
               <p onClick={()=> navigate('/orders')} className='cursor-pointer hover:text-black'>Orders</p>
               <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
+              <p onClick={handleDeleteAccount} className='cursor-pointer hover:text-black'>Delete Account</p>
             </div>
           </div>}
         </div>
