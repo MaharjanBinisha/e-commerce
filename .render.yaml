@@ -1,6 +1,6 @@
 services:
   - type: static
-    name: ecommerce-frontend
+    name: frontend
     env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
