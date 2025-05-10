@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ecommerce-frontend
+    name: frontend
     env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
