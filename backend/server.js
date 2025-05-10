@@ -24,13 +24,14 @@ connectCloudinary()
 app.use(express.json())
 app.use(
     cors({
-      origin: ["http://localhost:5173", "http://localhost:5174","https://e-commerce-ensemble-admin.vercel.app/"], // Allow frontend & admin
+      origin: ["http://localhost:5173", "http://localhost:5174","https://e-commerce-ensemble-admin.vercel.app"], // Allow frontend & admin
       credentials: true, // Allow cookies/auth headers if needed
-      methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
       allowedHeaders: ["Content-Type", "Authorization", "token"], // Allow token header
     })
   );
-  
+//Handle preflight requests
+app.options('*', cors()); // This will handle all OPTIONS requests
   
 //api endpoints 
 app.use('/api/user', userRouter) 
