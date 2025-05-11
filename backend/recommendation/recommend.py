@@ -167,7 +167,7 @@ from bson import ObjectId
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173","https://luxury-axolotl-18b878.netlify.app"], supports_credentials=True)
+CORS(app, origins=["http://localhost:5173","https://preeminent-licorice-037c01.netlify.app"], supports_credentials=True)
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://binisha:binisha7613@cluster0.he1e0.mongodb.net")

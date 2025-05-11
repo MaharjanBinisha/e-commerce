@@ -24,7 +24,7 @@ connectCloudinary()
 app.use(express.json())
 app.use(
     cors({
-      origin: ["http://localhost:5173", "http://localhost:5174","https://e-commerce-ensemble-admin.vercel.app","https://luxury-axolotl-18b878.netlify.app"], // Allow frontend & admin
+      origin: ["http://localhost:5173", "http://localhost:5174","https://e-commerce-ensemble-admin.vercel.app","https://preeminent-licorice-037c01.netlify.app"], // Allow frontend & admin
       credentials: true, // Allow cookies/auth headers if needed
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
       allowedHeaders: ["Content-Type", "Authorization", "token"], // Allow token header
