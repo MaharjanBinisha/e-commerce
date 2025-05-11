@@ -1,0 +1,14 @@
+node_modules/
+# Python virtual environment  
+venv/
+.env  
+
+# Compiled Python files  
+__pycache__/
+*.pyc  
+*.pyo  
+*.pyd  
+
+# Log files  
+*.log  
+logs/
